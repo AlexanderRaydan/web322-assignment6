@@ -7,6 +7,8 @@
 * https://www.senecacollege.ca/about/policies/academic-integrity-policy.html
 *
 * Name: Alexander Raydan Student ID: 124348236 Date: Sep 28 2024
+
+VERCEL DEPLOY: https://web322-assignment3-tau.vercel.app/
 ********************************************************************************/
 
 const express = require('express'); // "require" the Express module
