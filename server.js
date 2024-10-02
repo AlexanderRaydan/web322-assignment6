@@ -22,6 +22,8 @@ app.listen(HTTP_PORT, () => console.log(`server listening on: ${HTTP_PORT}`));
 
 app.use(express.static('public'));
 
+app.set('views', __dirname + '/views');
+
 // Home page
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'views', 'home.html'));
