@@ -20,7 +20,8 @@ legoSets.initialize()
 // start the server on the port and output a confirmation to the console
 app.listen(HTTP_PORT, () => console.log(`server listening on: ${HTTP_PORT}`));
 
-app.use(express.static('public'));
+//app.use(express.static('public'));
+app.use(express.static(__dirname + "/public/"));
 
 app.set('views', __dirname + '/views');
 
