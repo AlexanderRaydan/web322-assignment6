@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lego Collection</title>
+    <link href="/css/main.css" rel="stylesheet">
+</head>
+<body class="bg-base-200">
+
+    <nav class="navbar bg-base-200 shadow-lg">
+        <div class="flex-1">
+            <a href="/" class="btn btn-ghost normal-case text-xl">Lego Collection</a>
+        </div>
+        <div class="flex-none">
+            <ul class="menu menu-horizontal px-1">
+                <li><a href="/about">About</a></li>
+                <li tabindex="0">
+                    <details>
+                        <summary>Theme</summary>
+                        <ul class="p-2 bg-base-100 right-1">
+                          <li><a href="/lego/sets?theme=Christmas">Christmas</a></li>
+                          <li><a href="/lego/sets?theme=Harry Potter">Harry Potter</a></li>
+                          <li><a href="/lego/sets?theme=Kingdoms">Kingdoms</a></li>
+                        </ul>
+                      </details>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold text-center mb-4">About</h1>
+        <p class="text-center mb-8">Everything you want to know about me - the designer & developer..</p>
+    </div>
+
+
+    <div class="flex flex-col lg:flex-row gap-8 items-center">
+        <!-- Image Section -->
+        <div class="lg:w-1/2 lg:mr-8">
+            <img src="https://polytechnicscanada.ca/wp-content/uploads/2021/02/Seneca-4.png" alt="Seneca Polytechnic" class="rounded-lg shadow-lg w-full h-auto">
+        </div>
+
+        <!-- Text Section -->
+        <div class="lg:w-1/2 w-full">
+            <h2 class="text-2xl font-semibold text-neutral mb-4">My name is John Smith and I'm currently studying at Seneca Polytechnic.</h2>
+            <p class="text-lg text-neutral leading-relaxed mb-4">
+                Donec sollicitudin molestie tortor, vel feugiat nulla maximus quis. Suspendisse ut sapien id mauris sollicitudin commodo. Quisque semper, ligula et tincidunt dapibus, nisi ante fermentum lectus, nec molestie sem eros vel neque. Duis sit amet ligula eu ligula consectetur blandit sed at mi. 
+            </p>
+            <p class="text-lg text-neutral leading-relaxed mb-4">
+                Sed ac odio aliquet, vestibulum justo eget, volutpat eros. Mauris a dictum erat. Vivamus sodales egestas tempus. Duis pulvinar nibh enim, vel gravida nunc egestas id. Duis magna ante, posuere id luctus id, mattis at ipsum.
+            </p>
+            <p class="text-lg text-neutral leading-relaxed">
+                Nullam sit amet magna et dui varius tristique ac id nisl. Pellentesque est dolor, luctus vitae dictum ut, hendrerit lacinia lorem. Nullam a pharetra tortor.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

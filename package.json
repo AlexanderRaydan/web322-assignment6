@@ -1,0 +1,26 @@
+{
+
+  "scripts": {
+
+    "tw:build": "tailwindcss build -i ./public/css/tailwind.css -o ./public/css/main.css"
+
+  },
+
+  "devDependencies": {
+
+    "@tailwindcss/typography": "^0.5.15",
+
+    "daisyui": "^4.12.11",
+
+    "tailwindcss": "^3.4.13"
+
+  },
+
+  "dependencies": {
+
+    "express": "^4.21.0"
+
+  }
+
+}
+
