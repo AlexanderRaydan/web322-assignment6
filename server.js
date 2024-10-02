@@ -21,9 +21,11 @@ legoSets.initialize()
 app.listen(HTTP_PORT, () => console.log(`server listening on: ${HTTP_PORT}`));
 
 //app.use(express.static('public'));
-app.use(express.static(__dirname + "/public/"));
-
+app.use(express.static(__dirname + '/public'));
 app.set('views', __dirname + '/views');
+
+require('pg'); // explicitly require the "pg" module
+const Sequelize = require('sequelize');
 
 // Home page
 app.get('/', (req, res) => {
