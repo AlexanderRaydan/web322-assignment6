@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lego Collection</title>
+    <link href="/css/main.css" rel="stylesheet">
+</head>
+<body>
+    <%- include('partials/navbar', { page: '/lego/sets' }) %>
+
+    <section class="container mx-auto px-4 mb-8">
+        
+        <section class="container mx-auto px-4 py-8">
+            <h1 class="text-4xl font-bold text-center mb-4"><%= set.name %></h1>
+            <p class="text-center mb-8">Below, you will find detailed information about the set: <%= set.name %></p>
+        </section>
+
+        <!-- Content Wrapper -->
+        <div class="bg-gray-200 rounded-lg p-6 shadow-lg">
+            <!-- Image and Info Row -->
+            <div class="flex flex-col lg:flex-row items-center lg:items-start gap-8">
+                <!-- Image -->
+                <div class="w-full lg:w-1/2 flex justify-center">
+                    <img src="<%= set.img_url %>" alt="<%= set.name %>" class="w-full max-w-md rounded-md shadow-md" />
+                </div>
+
+                <!-- Info Section -->
+                <div class="w-full lg:w-1/2 text-gray-800">
+                    <p class="text-xl mb-4"><strong>Set Name:</strong> <%= set.name %></p>
+                    <p class="text-xl mb-4"><strong>Year Released:</strong> <%= set.year %></p>
+                    <p class="text-xl mb-4"><strong>Theme:</strong> <%= set.theme %></p>
+                    <p class="text-xl mb-4"><strong>Number of Parts:</strong> <%= set.num_parts %></p>
+
+                    <div class="mt-8">
+                        <a href="/lego/sets" class="btn btn-primary text-white  px-6 py-2 rounded-md">
+                            RETURN
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
