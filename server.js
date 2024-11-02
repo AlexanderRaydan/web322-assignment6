@@ -6,7 +6,7 @@
 *
 * https://www.senecacollege.ca/about/policies/academic-integrity-policy.html
 *
-* Name: Alexander Raydan Student ID: 124348236 Date: Sep 28 2024
+* Name: Alexander Raydan Student ID: 124348236 Date: Oct 20 2024
 
 VERCEL DEPLOY: https://web322-assignment3-seven.vercel.app/
 ********************************************************************************/
@@ -27,6 +27,7 @@ app.listen(HTTP_PORT, () => console.log(`server listening on: ${HTTP_PORT}`));
 
 //app.use(express.static('public'));
 app.use(express.static(__dirname + '/public'));
+app.set('views', __dirname + '/views');
 
 require('pg'); // explicitly require the "pg" module
 const Sequelize = require('sequelize');
