@@ -29,12 +29,18 @@
                 <div class="w-full lg:w-1/2 text-gray-800">
                     <p class="text-xl mb-4"><strong>Set Name:</strong> <%= set.name %></p>
                     <p class="text-xl mb-4"><strong>Year Released:</strong> <%= set.year %></p>
-                    <p class="text-xl mb-4"><strong>Theme:</strong> <%= set.theme %></p>
+                    <p class="text-xl mb-4"><strong>Theme:</strong> <%= set.Theme.name %></p>
                     <p class="text-xl mb-4"><strong>Number of Parts:</strong> <%= set.num_parts %></p>
 
                     <div class="mt-8">
                         <a href="/lego/sets" class="btn btn-primary text-white  px-6 py-2 rounded-md">
                             RETURN
+                        </a>
+                    </div>
+
+                    <div class="mt-8">
+                        <a href="/lego/editSet/<%= set.set_num %>" class="btn btn-primary text-white  px-6 py-2 rounded-md">
+                            EDIT
                         </a>
                     </div>
                 </div>

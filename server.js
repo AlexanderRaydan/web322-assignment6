@@ -1,19 +1,19 @@
 /*********************************************************************************
-* WEB322 – Assignment 04
+* WEB322 – Assignment 05
 *
 * I declare that this assignment is my own work in accordance with Seneca's
 * Academic Integrity Policy:
 *
 * https://www.senecacollege.ca/about/policies/academic-integrity-policy.html
 *
-* Name: Alexander Raydan Student ID: 124348236 Date: Oct 20 2024
+* Name: Alexander Raydan Student ID: 124348236 Date: Nov 16 2024
 
-VERCEL DEPLOY: https://web322-assignment4-one.vercel.app/
 ********************************************************************************/
 
 const express = require('express'); // "require" the Express module
 
 const app = express(); // obtain the "app" object
+
 app.set('view engine', 'ejs');
 
 const HTTP_PORT = process.env.PORT || 8080; // assign a port
@@ -29,14 +29,14 @@ app.listen(HTTP_PORT, () => console.log(`server listening on: ${HTTP_PORT}`));
 app.use(express.static(__dirname + '/public'));
 app.set('views', __dirname + '/views');
 
+app.use(express.urlencoded({ extended: true })); // For form data
+
 require('pg'); // explicitly require the "pg" module
-const Sequelize = require('sequelize');
 
 // Home page
 app.get('/', (req, res) => {
     res.render('home');
 });
-
 
 // About page
 app.get('/about', (req, res) => {
@@ -79,25 +79,66 @@ app.get('/lego/sets/:set_num', (req, res) => {
 });
 
 
-app.get('/lego/sets/bad-num-demo', (req, res) => {
-    legoSets.getSetByNum('bad_id')
-        .then(
-            (e) => res.send(e)
-        )
-        .catch(
-            (err) => res.send(err)
-        )
+app.get('/lego/editSet/:set_num', (req, res) => {
+    const setNum = req.params.set_num;
+    Promise.all([legoSets.getSetByNum(setNum), legoSets.getAllThemes()])
+        .then(([setData, themeData]) => {
+            res.render('editSet', { set: setData, themes: themeData });
+        })
+        .catch((err) => {
+            res.status(404).render('404', { message: `Error loading data: ${err.message}` });
+        });
 });
 
 
-app.get('/lego/sets/bad-theme-demo', (req, res) => {
-    legoSets.getSetsByTheme('bad_id')
-        .then(
-            (e) => res.send(e)
-        )
-        .catch(
-            (err) => res.send(err)
-        )
+app.get('/lego/addSet', (req, res) => {
+    legoSets.getAllThemes()
+        .then((themes) => {
+            res.render('addSet', { themes });
+        })
+        .catch((err) => {
+            res.status(500).send(`Error loading themes: ${err.message}`);
+        });
+});
+
+app.post('/lego/addSet', (req, res) => {
+
+    const { set_num, name, year, num_parts, img_url, theme_id } = req.body;
+
+    legoSets.createSet({ set_num, name, year, num_parts, img_url, theme_id })
+        .then(() => {
+            res.redirect('/lego/sets');
+        })
+        .catch((err) => {
+            res.render("500", { message: `I'm sorry, but we have encountered the following: ${err.message}` });
+        });
+});
+
+
+app.post('/lego/editSet', (req, res) => {
+    const setNum = req.body.set_num;
+    const updatedData = req.body;
+
+    legoSets.editSet(setNum, updatedData)
+        .then(() => {
+            res.redirect('/lego/sets');
+        })
+        .catch((err) => {
+            res.render("500", { message: `I'm sorry, but we have encountered the following: ${err.message}` });
+        });
+});
+
+
+app.get('/lego/deleteSet/:num', (req, res) => {
+    const setNum = req.params.num;
+
+    legoSets.deleteSet(setNum)
+        .then(() => {
+            res.redirect('/lego/sets');
+        })
+        .catch((err) => {
+            res.render("500", { message: `I'm sorry, but we have encountered the following: ${err.message}` });
+        });
 });
 
 

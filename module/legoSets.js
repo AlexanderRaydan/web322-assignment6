@@ -1,54 +1,138 @@
 /*********************************************************************************
-* WEB322 – Assignment 2
-* I declare that this assignment is my own work in accordance with Seneca Academic Policy.
-* No part of this assignment has been copied manually or electronically from any other source
-* (including web sites) or distributed to other students.
+* WEB322 – Assignment 05
 *
-* Name: Alexander Raydan Student ID: 124348236 Date: Sep 4 2024
+* I declare that this assignment is my own work in accordance with Seneca's
+* Academic Integrity Policy:
+*
+* https://www.senecacollege.ca/about/policies/academic-integrity-policy.html
+*
+* Name: Alexander Raydan Student ID: 124348236 Date: Nov 16 2024
+
 ********************************************************************************/
 
-const setData = require("../data/setData");
-const themeData = require("../data/themeData");
-let sets = [];
+const sequelize = require('../sequelizeInstance');
+const Set = require('../models/set');
+const Theme = require('../models/theme');
+const Sequelize = require('sequelize');
 
 function initialize() {
-    return new Promise((resolve, reject) => {
-        let theme;
-        setData.forEach(lego => {
-            theme = themeData.find(e => e.id === lego.theme_id)
-            lego.theme = theme.name;
-            sets.push(lego);
+    return sequelize
+        .sync()
+        .then(() => {
+            console.log("Database synced successfully.");
+        })
+        .catch((err) => {
+            console.log("Error syncing the database:", err);
+            throw err;
         });
-        sets.length !== 0 ? resolve('Data initialized successfully') : reject('No data')
-    });
 }
 
 function getAllSets() {
-
-    return new Promise((resolve, reject) => {
-        initialize().then(
-            sets.length !== 0 ? resolve(sets) : reject('No data')
-        )
-    });
+    return Set.findAll({ include: [Theme] })
+        .then((sets) => {
+            if (sets.length === 0) throw new Error("No sets found.");
+            return sets;
+        })
+        .catch((err) => {
+            throw new Error(`Error: ${err.message}`);
+        });
 }
 
 function getSetByNum(setNum) {
-    let set = sets.find(e => e.set_num === setNum)
-    return new Promise((resolve, reject) => {
-        initialize().then(
-            set !== undefined ? resolve(set) : reject(`Set number ${setNum} not found`)
-        )
-    });
+    return Set.findAll({
+        include: [Theme],
+        where: { set_num: setNum },
+    })
+        .then((sets) => {
+            if (sets.length === 0) throw new Error("Set not found.");
+            return sets[0];
+        })
+        .catch((err) => {
+            throw new Error(`Error: ${err.message}`);
+        });
 }
-
-
 function getSetsByTheme(theme) {
-    let set = sets.filter(e => e.theme.toUpperCase().includes(theme.toUpperCase()))
-    return new Promise((resolve, reject) => {
-        initialize().then(
-            set.length !== 0 ? resolve(set) : reject(`Set theme ${theme} not found`)
-        )
-    });
+    return Set.findAll({
+        include: [Theme],
+        where: {
+            '$Theme.name$': {
+                [Sequelize.Op.iLike]: `%${theme}%`,
+            },
+        },
+    })
+        .then((sets) => {
+            if (sets.length === 0) throw new Error("Sets not founds sets.");
+            return sets;
+        })
+        .catch((err) => {
+            throw new Error(`Error: ${err.message}`);
+        });
 }
 
-module.exports = { initialize, getAllSets, getSetByNum, getSetsByTheme }
+
+function createSet(setData) {
+    return Set.create(setData)
+        .then((createdSet) => {
+            return createdSet;
+        })
+        .catch((err) => {
+            throw new Error(err.errors[0].message);
+        });
+}
+
+
+
+function getAllThemes() {
+    return Theme.findAll()
+        .then((themes) => {
+            if (themes.length === 0) throw new Error("No themes found.");
+            return themes;
+        })
+        .catch((err) => {
+            throw new Error(`Unable to fetch themes: ${err.message}`);
+        });
+}
+
+
+function editSet(set_num, setData) {
+    return Set.update(setData, {
+        where: { set_num: set_num },
+    })
+        .then((updatedRows) => {
+            if (updatedRows[0] === 0) {
+                throw new Error(`Set with set_num ${set_num} not found.`);
+            }
+            return;
+        })
+        .catch((err) => {
+            throw new Error(err.errors ? err.errors[0].message : err.message);
+        });
+}
+
+
+function deleteSet(set_num) {
+    return Set.destroy({
+        where: { set_num: set_num },
+    })
+        .then((deletedRows) => {
+            if (deletedRows === 0) {
+                throw new Error(`Set with set_num ${set_num} not found.`);
+            }
+            return;
+        })
+        .catch((err) => {
+            throw new Error(err.errors ? err.errors[0].message : err.message);
+        });
+}
+
+
+module.exports = {
+    initialize,
+    getAllSets,
+    getSetByNum,
+    getSetsByTheme,
+    getAllThemes,
+    createSet,
+    editSet,
+    deleteSet
+}
