@@ -1,4 +1,6 @@
 require('dotenv').config();
+const bcrypt = require('bcryptjs');
+
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -33,17 +35,25 @@ function registerUser(userData) {
             return reject('Passwords do not match');
         }
 
-        let newUser = new User({
-            userName: userData.userName,
-            password: userData.password,
-            email: userData.email,
-            loginHistory: [],
-        });
+        bcrypt.hash(userData.password, 10)
+            .then((hash) => {
+                let newUser = new User({
+                    userName: userData.userName,
+                    password: hash,
+                    email: userData.email,
+                    loginHistory: [],
+                });
 
-        newUser
-            .save()
-            .then(() => resolve())
-            .catch((err) => {
+                newUser.save()
+                    .then(() => resolve())
+                    .catch((err) => {
+                        if (err.code === 11000) {
+                            reject('User Name already taken');
+                        } else {
+                            reject(`There was an error creating the user: ${err}`);
+                        }
+                    });
+            }).catch((err) => {
                 if (err.code === 11000) {
                     reject('User Name already taken');
                 } else {
@@ -61,29 +71,39 @@ function checkUser(userData) {
                     return reject(`Unable to find user: ${userData.userName}`);
                 }
 
-                // Validate the password
-                if (user.password !== userData.password) {
-                    return reject(`Incorrect Password for user: ${userData.userName}`);
-                }
+                bcrypt.compare(userData.password, user.password)
+                    .then((isMatch) => {
+                        if (!isMatch) {
+                            return reject(`Incorrect Password for user: ${userData.userName}`);
+                        }
 
-                // Manage login history
-                if (user.loginHistory.length >= 8) {
-                    user.loginHistory.pop();
-                }
-                user.loginHistory.unshift({
-                    dateTime: new Date().toString(),
-                    userAgent: userData.userAgent,
-                });
+                        // Manage login history
+                        if (user.loginHistory.length >= 8) {
+                            user.loginHistory.pop();
+                        }
+                        user.loginHistory.unshift({
+                            dateTime: new Date().toString(),
+                            userAgent: userData.userAgent,
+                        });
 
-                // Update the user's login history
-                User.updateOne(
-                    { userName: user.userName },
-                    { $set: { loginHistory: user.loginHistory } }
-                )
-                    .then(() => resolve(user))
-                    .catch((err) =>
-                        reject(`There was an error verifying the user: ${err}`)
-                    );
+                        // Update the user's login history
+                        User.updateOne(
+                            { userName: user.userName },
+                            { $set: { loginHistory: user.loginHistory } }
+                        )
+                            .then(() => resolve({
+                                userName: user.userName,
+                                email: user.email,
+                                loginHistory: user.loginHistory,
+                            }))
+                            .catch((err) =>
+                                reject(`There was an error verifying the user: ${err}`)
+                            );
+                    })
+                    .catch((err) => {
+                        console.error('Error comparing passwords:', err);
+                        reject('An error occurred while verifying the password');
+                    });
             })
             .catch(() =>
                 reject(`Unable to find user: ${userData.userName}`)
