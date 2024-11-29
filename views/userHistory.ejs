@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User: <%= session.user.userName %></title>
+    <link href="/css/main.css" rel="stylesheet">
+</head>
+<body>
+    <%- include('partials/navbar', { page: '/lego/sets' }) %>
+
+    <section class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold text-center mb-4">User History</h1>
+        <p class="text-center ">Email: <%= session.user.email %></p>
+        <p class="text-center ">Email: <%= session.user.userName %></p>
+
+    </section>
+
+    <section class="container mx-auto px-4">
+        <div class="overflow-x-auto overflow-y-hidden">
+            <table class="table table-zebra w-full bg-white shadow-lg rounded-lg">
+                <thead class="bg-gray-200">
+                    <tr>
+                        <th class="py-3 text-left">Login Date/Time</th>
+                        <th class="py-3 text-left">Client Information</th>
+                    </tr>
+                </thead>
+                <tbody>
+                  <% session.user.loginHistory.forEach(history => { %>
+                    <tr class="hover:bg-gray-50">
+                        <!-- Parts Column -->
+                        <td class="py-4 text-gray-600"><%= history.dateTime %></td>
+                        <!-- Details Column -->
+                        <td class="py-4 text-gray-600"><%= history.userAgent %></td>
+
+                    </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</body>
+</html>
